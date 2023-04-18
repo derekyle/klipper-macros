@@ -1,0 +1,260 @@
+# This file contains pin mappings for the Creality "v4.2.7" board. To
+# use this config, during "make menuconfig" select the STM32F103 with
+# a "28KiB bootloader" and serial (on USART1 PA10/PA9) communication.
+
+# If you prefer a direct serial connection, in "make menuconfig"
+# select "Enable extra low-level configuration options" and select
+# serial (on USART3 PB11/PB10), which is broken out on the 10 pin IDC
+# cable used for the LCD module as follows:
+# 3: Tx, 4: Rx, 9: GND, 10: VCC
+
+# Flash this firmware by copying "out/klipper.bin" to a SD card and
+# turning on the printer with the card inserted. The firmware
+# filename must end in ".bin" and must not match the last filename
+# that was flashed.
+# See docs/Config_Reference.md for a description of parameters.
+
+[mcu]
+serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+restart_method: command
+
+[display] # RET6 12864 LCD
+lcd_type: st7920
+cs_pin: PB12
+sclk_pin: PB13
+sid_pin: PB15
+encoder_pins: ^PB14, ^PB10
+click_pin: ^!PB2
+
+[stepper_x]
+step_pin: PB9
+dir_pin: PC2
+enable_pin: !PC3
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PA5
+position_endstop: 0
+position_max: 260
+position_min: 0
+homing_speed: 75
+
+[stepper_y]
+step_pin: PB7
+dir_pin: PB8
+enable_pin: !PC3
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PA6
+position_endstop: 0
+position_max: 242
+position_min: 0
+homing_speed: 75
+
+[stepper_z]
+step_pin: PB5
+dir_pin: !PB6
+enable_pin: !PC3
+microsteps: 16
+rotation_distance: 8
+endstop_pin: probe:z_virtual_endstop
+#position_endstop: 0.0
+position_min: -3
+position_max: 250
+
+[bltouch]
+sensor_pin: ^PB1
+control_pin: PB0
+pin_up_touch_mode_reports_triggered: True
+probe_with_touch_mode: True
+x_offset: -45.3
+y_offset: -9.4
+#z_offset: 2.10
+speed: 10
+samples: 3
+sample_retract_dist: 5.0              # Can be set lower, example 2.5 depending on height of bltouch from bed
+lift_speed: 40
+samples_tolerance_retries: 3
+
+[bed_mesh]
+speed: 120
+horizontal_move_z: 5
+mesh_min: 30,46
+mesh_max: 200,216
+probe_count: 3,3
+algorithm: bicubic
+fade_start: 1
+fade_end: 10
+fade_target: 0
+
+[screws_tilt_adjust]
+screw1: 80,56
+screw1_name: front left screw
+screw2: 250,56
+screw2_name: front right screw
+screw3: 250,226
+screw3_name: rear right screw
+screw4: 80,226
+screw4_name: rear left screw
+horizontal_move_z: 10
+speed: 50
+screw_thread: CW-M4
+
+[safe_z_home]
+home_xy_position: 118,134 # Change coordinates to the center of your print bed
+z_hop: 10 # Move up 10mm
+z_hop_speed: 5
+
+[extruder]
+max_extrude_only_distance: 100.0
+pressure_advance: 0.08
+#max_extrude_cross_section: 1.0 # default 0.640
+step_pin: PB3
+dir_pin: PB4
+enable_pin: !PC3
+microsteps: 16
+full_steps_per_rotation: 200
+rotation_distance: 22.848
+#rotation_distance: 24.61538
+#rotation_distance: 33.500
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+heater_pin: PA1
+sensor_type: Generic 3950
+sensor_pin: PC5
+#control = pid
+#pid_kp = 20.172
+#pid_ki = 0.857
+#pid_kd = 118.765
+min_temp: 0
+max_temp: 250
+
+[heater_bed]
+heater_pin: PA2
+sensor_type: EPCOS 100K B57560G104F
+sensor_pin: PC4
+#control = pid
+#pid_kp = 74.155
+#pid_ki = 1.909
+#pid_kd = 720.233
+min_temp: 0
+max_temp: 130
+
+[skew_correction]
+
+[fan]
+pin: PA0
+
+[printer]
+kinematics: cartesian
+max_velocity: 300
+max_accel: 3000
+max_z_velocity: 5
+max_z_accel: 100
+
+[board_pins]
+aliases:
+  EXP1_1=PC6,EXP1_3=PB10,EXP1_5=PB14,EXP1_7=PB12,EXP1_9=<GND>,
+  EXP1_2=PB2,EXP1_4=PB11,EXP1_6=PB13,EXP1_8=PB15,EXP1_10=<5V>,
+  PROBE_IN=PB0,PROBE_OUT=PB1,FIL_RUNOUT=PC6
+
+[respond]
+default_type: command
+[pause_resume] 
+recover_velocity: 50
+
+[gcode_macro M0]
+gcode:
+  PAUSE
+
+# All customizations are documented in globals.cfg. Just copy a variable from
+# there into the section below, and change the value to meet your needs.
+
+[gcode_macro _km_options]
+# These are examples of some likely customizations:
+# Any sheets in the below list will be available with a configurable offset.
+#variable_bed_surfaces: ['smooth_1','texture_1']
+# Length (in mm) of filament to load (bowden tubes will be longer).
+#variable_load_length: 90.0
+variable_start_extruder_set_target_before_level: False
+# Hide the Octoprint LCD menu since I don't use it.
+variable_menu_show_octoprint: True
+# Customize the filament menus (up to 10 entries).
+#variable_menu_temperature: [
+#  {'name' : 'PLA',  'extruder' : 200.0, 'bed' : 60.0},
+#  {'name' : 'PETG', 'extruder' : 230.0, 'bed' : 85.0},
+#  {'name' : 'ABS',  'extruder' : 245.0, 'bed' : 110.0, 'chamber' : 60}]
+# Length of filament (in millimeters) to purge at print start.
+variable_start_purge_length: 15 # This value works for most setups.
+gcode: # This line is required by Klipper.
+# Any code you put here will run at klipper startup, after the initialization
+# for these macros. For example, you could uncomment the following line to
+# automatically adjust your bed surface offsets to account for any changes made
+# to your Z endstop or probe offset.
+#  ADJUST_SURFACE_OFFSETS
+
+# This line includes all the standard macros.
+[include klipper-macros/*.cfg]
+# Uncomment to include features that require specific hardware support.
+# LCD menu support for features like bed surface selection and pause next layer.
+[include klipper-macros/optional/lcd_menus.cfg]
+# Optimized bed leveling
+[include klipper-macros/optional/bed_mesh.cfg]
+
+# The sections below here are required for the macros to work. If your config
+# already has some of these sections you should merge the duplicates into one
+# (or if they are identical just remove one of them).
+[idle_timeout]
+gcode:
+  _KM_IDLE_TIMEOUT # This line must be in your idle_timeout section.
+
+[pause_resume]
+
+[respond]
+
+[save_variables]
+filename: ~/variables.cfg # UPDATE THIS FOR YOUR PATH!!!
+
+[virtual_sdcard]
+path: ~/gcode_files # UPDATE THIS FOR YOUR PATH!!!
+
+[display_status]
+
+# Uncomment the sections below if Fluidd complains (because it's confused).
+#[gcode_macro CANCEL_PRINT]
+#rename_existing: CANCEL_PRINT_FAKE_BASE
+#gcode: CANCEL_PRINT_FAKE_BASE {rawparams}
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
+#*# [bed_mesh default]
+#*# version = 1
+#*# points =
+#*# 	  0.013333, 0.054167, 0.115000
+#*# 	  0.007500, 0.048333, 0.095833
+#*# 	  -0.003333, 0.030000, 0.077500
+#*# tension = 0.2
+#*# min_x = 30.0
+#*# algo = lagrange
+#*# y_count = 3
+#*# mesh_y_pps = 2
+#*# min_y = 46.0
+#*# x_count = 3
+#*# max_y = 92.74
+#*# mesh_x_pps = 2
+#*# max_x = 112.37
+#*#
+#*# [extruder]
+#*# control = pid
+#*# pid_kp = 19.545
+#*# pid_ki = 0.846
+#*# pid_kd = 112.871
+#*#
+#*# [heater_bed]
+#*# control = pid
+#*# pid_kp = 73.231
+#*# pid_ki = 1.644
+#*# pid_kd = 815.610
+#*#
+#*# [bltouch]
+#*# z_offset = 1.900
