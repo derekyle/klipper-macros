@@ -69,10 +69,10 @@ probe_with_touch_mode: True
 x_offset: -45.3
 y_offset: -9.4
 #z_offset: 2.10
-speed: 10
+speed: 20
 samples: 3
-sample_retract_dist: 5.0              # Can be set lower, example 2.5 depending on height of bltouch from bed
-lift_speed: 40
+sample_retract_dist: 2.0              # Can be set lower, example 2.5 depending on height of bltouch from bed
+lift_speed: 60
 samples_tolerance_retries: 3
 
 [bed_mesh]
@@ -80,7 +80,7 @@ speed: 120
 horizontal_move_z: 5
 mesh_min: 30,46
 mesh_max: 200,216
-probe_count: 3,3
+probe_count: 5
 algorithm: bicubic
 fade_start: 1
 fade_end: 10
@@ -176,8 +176,13 @@ gcode:
 # Length (in mm) of filament to load (bowden tubes will be longer).
 #variable_load_length: 90.0
 variable_start_extruder_set_target_before_level: False
-# Hide the Octoprint LCD menu since I don't use it.
+
 variable_menu_show_octoprint: True
+
+variable_park_x: 55
+variable_park_y: 55
+variable_park_z: 10
+
 # Customize the filament menus (up to 10 entries).
 #variable_menu_temperature: [
 #  {'name' : 'PLA',  'extruder' : 200.0, 'bed' : 60.0},
@@ -215,7 +220,7 @@ gcode:
 filename: ~/variables.cfg # UPDATE THIS FOR YOUR PATH!!!
 
 [virtual_sdcard]
-path: ~/gcode_files # UPDATE THIS FOR YOUR PATH!!!
+path: ~/.octoprint/uploads # UPDATE THIS FOR YOUR PATH!!!
 
 [display_status]
 
@@ -257,4 +262,4 @@ path: ~/gcode_files # UPDATE THIS FOR YOUR PATH!!!
 #*# pid_kd = 815.610
 #*#
 #*# [bltouch]
-#*# z_offset = 1.900
+#*# z_offset = 1.950
